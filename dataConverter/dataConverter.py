@@ -5,20 +5,20 @@ dataSet = pd.read_csv(dirname + "/input/data.csv")
 
 
 verticePerson = open(dirname + "/output/vertext_Person.txt","w")
-verticePerson.write("~id,~label,name:String,gender:String\n")
 
 
-dataSet["full_name"] = dataSet["first"] + " " + dataSet["last"] + "#" + dataSet["gender"]
+dataSet["full_name"] = dataSet["first"] + "_" + dataSet["last"] + "#" + dataSet["gender"]
 for row in dataSet["full_name"].unique():
-    name = row.split("#")[0]
+    personID = row.split("#")[0]
+    name = personID.split("_")[0] + " " + personID.split("_")[1]
     gender = row.split("#")[1]
-    verticePerson.write(name + ", Person, " + name + "," + gender  + "\n")
+    query = "g.addV('Person').property('id','" + personID + "').property('name','" + name + "').property('gender','" + gender + "')\n"
+    verticePerson.write(query)
 verticePerson.close()
 
 
 
 edgesTransactions = open(dirname + "/output/edges_transactions.txt","w")
-edgesTransactions.write("~id,~from,~label,amount:Int,time:Date,status:String,~to\n")
 
 id = 1
 for i in range(len(dataSet.values)):
@@ -28,15 +28,16 @@ for i in range(len(dataSet.values)):
     merchant = merchant.replace(",", " ")
     merchant = merchant.replace("fraud_", "")
     amount = dataSet["amt"].values[i]
-    name = dataSet["full_name"].values[i].split("#")[0]
-    edgesTransactions.write("id" + str(id) + "," + name + ",HAS_BOUGHT_AT," + "," + str(amount) + "," + fecha + "," + fraud + "," + merchant + "\n")
+    personID = dataSet["full_name"].values[i].split("#")[0]
+    name = personID.split("_")[0] + " " + personID.split("_")[1]
+    query = "g.V('" + personID + "').addE('HAS_BOUGHT_AT').to(g.V('" + merchant +"')).property('amount','" + str(amount) + "').property('fecha','" + fecha + "').property('status','" + fraud +"')\n"
+    edgesTransactions.write(query)
     id += 1
 
 edgesTransactions.close()
 
 
 verticeMerchant = open(dirname + "/output/vertext_Merchant.txt","w")
-verticeMerchant.write("~id,~label,name:String,street:String,address:String\n")
 dataSet["full_merchant"] = dataSet["merchant"] + "#" + dataSet["street"] + "#" + dataSet["city"]
 for row in dataSet["full_merchant"].unique():
     merchant = row.split("#")[0]
@@ -44,6 +45,7 @@ for row in dataSet["full_merchant"].unique():
     merchant = merchant.replace("fraud_", "")
     street = row.split("#")[1]
     city = row.split("#")[2]
-    verticeMerchant.write(merchant + ", Merchant, " + merchant + "," + street + "," + city  + "\n")
+    query = "g.addV('Merchant').property('id','" + merchant + "').property('name','" + merchant + "').property('street','" + street + "').property('city','" + city + "')\n"
+    verticeMerchant.write(query)
     
 verticeMerchant.close()
