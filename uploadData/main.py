@@ -27,7 +27,7 @@ def insertar_vertices(gremlin_client,VERTICES):
             i += 1
         else:
             print("Error: {0}".format(vertex))
-        print("Se insertaron {0} vertices".format(i))
+    print("Se insertaron {0} vertices".format(i))
 
 def cleanAll(gremlin_client):
     callback = gremlin_client.submitAsync("g.V().drop()")
@@ -47,7 +47,7 @@ try:
     )
     cleanAll(gremlin_client)
     print('Conexion exitosa')
-    verticesPersonas = verticesPersonas[:1]
+    print('Insertando vertices de personas')
     insertar_vertices(gremlin_client,verticesPersonas)
 
 except GremlinServerError as e:

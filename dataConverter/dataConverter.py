@@ -14,7 +14,7 @@ for row in dataSet["full_name"].unique():
     personID = row.split("#")[0]
     name = personID.split("_")[0] + " " + personID.split("_")[1]
     gender = row.split("#")[1]
-    query = "g.addV('Person').property('id','" + personID + "').property('name','" + name + "').property('gender','" + gender + "')\n"
+    query = "g.addV('Person').property('id','" + personID + "').property('name','" + name + "').property('gender','" + gender + "').property('pk','pk')\n"
     verticePerson.write(query)
 verticePerson.close()
 
@@ -47,7 +47,7 @@ for row in dataSet["full_merchant"].unique():
     merchant = merchant.replace("fraud_", "")
     street = row.split("#")[1]
     city = row.split("#")[2]
-    query = "g.addV('Merchant').property('id','" + merchant + "').property('name','" + merchant + "').property('street','" + street + "').property('city','" + city + "')\n"
+    query = "g.addV('Merchant').property('id','" + merchant + "').property('name','" + merchant + "').property('street','" + street + "').property('city','" + city + "').property('pk','pk')\n"
     verticeMerchant.write(query)
     
 verticeMerchant.close()

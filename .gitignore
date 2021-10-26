@@ -2,3 +2,4 @@ input/
 output/
 *.csv
 uploadData/config.py
+uploadData/__pycache__/
