@@ -29,12 +29,25 @@ def insertar_vertices(gremlin_client,VERTICES):
             print("Error: {0}".format(vertex))
     print("Se insertaron {0} vertices".format(i))
 
+
+def insertar_edges(gremlin_client,EDGES):
+    i = 0
+    for edge in EDGES:
+        callback = gremlin_client.submitAsync(edge)
+        if callback.result() is not None:
+            i += 1
+        else:
+            print("Error: {0}".format(edge))
+    print("Se insertaron {0} edges".format(i))
+
 def cleanAll(gremlin_client):
     callback = gremlin_client.submitAsync("g.V().drop()")
     if callback.result() is not None:
         print("Grafo Vacio!")
 
 verticesPersonas = readFile(dirname + "/output/vertext_Person.txt")
+verticesMercancia = readFile(dirname + "/output/vertext_Merchant.txt")
+edgesVentas = readFile(dirname + "/output/edges_transactions.txt")
 
 
 try:
@@ -45,10 +58,18 @@ try:
         password=PRIMARY_KEY,
         message_serializer=serializer.GraphSONSerializersV2d0()
     )
-    cleanAll(gremlin_client)
     print('Conexion exitosa')
+    cleanAll(gremlin_client)
     print('Insertando vertices de personas')
     insertar_vertices(gremlin_client,verticesPersonas)
+
+    print('Insertando vertices de mercancia')
+    verticesMercancia = verticesMercancia[:1000]
+    insertar_vertices(gremlin_client,verticesMercancia)
+
+    edgesVentas = edgesVentas[1000:2000]
+    
+    insertar_edges(gremlin_client,edgesVentas)
 
 except GremlinServerError as e:
     print('Code: {0}, Attributes: {1}'.format(e.status_code, e.status_attributes))
