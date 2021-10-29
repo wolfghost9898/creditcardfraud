@@ -64,10 +64,10 @@ try:
     insertar_vertices(gremlin_client,verticesPersonas)
 
     print('Insertando vertices de mercancia')
-    verticesMercancia = verticesMercancia[:1000]
+    #verticesMercancia = verticesMercancia[:1000]
     insertar_vertices(gremlin_client,verticesMercancia)
 
-    edgesVentas = edgesVentas[1000:2000]
+    #edgesVentas = edgesVentas[1000:2000]
     
     insertar_edges(gremlin_client,edgesVentas)
 
